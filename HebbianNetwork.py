@@ -22,9 +22,13 @@ class HebbianNetwork():
         transformed_outputs = np.array([self.output_to_network(label) for label in labels])
 
         for _ in range(epochs):
-            for i in range(len(inputs)):
+            for index in range(len(inputs)):
                 #Basic learning rule
-                self.weights += learning_rate * np.outer(transformed_inputs[i], transformed_outputs[i])
+                #self.weights += learning_rate * np.outer(transformed_inputs[i], transformed_outputs[i])
+                for i in range(len(transformed_inputs[index])):
+                    for j in range(len(transformed_outputs[index])):
+                        self.weights[i][j] += learning_rate * transformed_outputs[index][j] * (transformed_inputs[index][i] - self.weights[i][j])
+
 
         print(self.weights)
     
