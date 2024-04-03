@@ -369,7 +369,7 @@ def main():
                     recorder.remove_death()
                     recorder.save("data.csv")
 
-                pygame.time.delay(500)
+                pygame.time.delay(5000)
                 death_count += 1
                 menu(death_count)
 
