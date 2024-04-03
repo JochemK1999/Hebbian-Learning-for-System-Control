@@ -29,7 +29,7 @@ class HebbianNetwork():
         print(self.weights)
     
     def input_to_network(self, input):
-        network_input = np.full(input.shape[0]*3, 0)
+        network_input = np.full(input.shape[0]*3, -1)
     
         for inputIndex, value in enumerate(input):
             if value == 1:
@@ -75,5 +75,5 @@ class HebbianNetwork():
     def predict(self, input):
         transformed_input = self.input_to_network(np.array(input))
         output = np.dot(transformed_input, self.weights)
-
+        #print(transformed_input, output)
         return self.network_to_output(output)
