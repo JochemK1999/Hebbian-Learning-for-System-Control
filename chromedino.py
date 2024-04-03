@@ -18,7 +18,7 @@ SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-NETWORK_PLAY = True
+NETWORK_PLAY = False
 
 pygame.display.set_caption("Chrome Dino Runner")
 
@@ -369,7 +369,7 @@ def main():
                     recorder.remove_death()
                     recorder.save("data.csv")
 
-                pygame.time.delay(5000)
+                pygame.time.delay(5000 if NETWORK_PLAY else 500)
                 death_count += 1
                 menu(death_count)
 
