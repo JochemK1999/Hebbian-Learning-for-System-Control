@@ -48,14 +48,16 @@ class HebbianNetwork():
         return network_input
 
     def output_to_network(self, output):
-        network_output = np.zeros(3)
+        network_output = np.zeros(4)
         
         if output == "nothing":
             network_output[0] = 1
         if output == "jump":
             network_output[1] = 1
-        if output == "duck":
+        if output == "long_jump":
             network_output[2] = 1
+        if output == "duck":
+            network_output[3] = 1
         
         return network_output
     
@@ -65,6 +67,8 @@ class HebbianNetwork():
         if output[1] == max(output):
             return "jump"
         if output[2] == max(output):
+            return "long_jump"
+        if output[3] == max(output):
             return "duck"
 
     def save(self, filename):
@@ -78,6 +82,7 @@ class HebbianNetwork():
     
     def predict(self, input):
         transformed_input = self.input_to_network(np.array(input))
+        print(self.weights.shape)
         output = np.dot(transformed_input, self.weights)
 
         return self.network_to_output(output)

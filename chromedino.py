@@ -190,12 +190,15 @@ class Bird(Obstacle):
 class DataRecorder():
     def __init__(self, measuring_places):
         self.inputs = []
+        self.jumping = []
         self.outputs = []
         self.headers = measuring_places.copy()
+        self.headers.append("jumping")
         self.headers.append("output")
     
-    def record(self, inputs, output):
+    def record(self, inputs, jumping, output):
         self.inputs.append(inputs)
+        self.jumping.append(jumping)
 
         if (output[pygame.K_UP] or output[pygame.K_SPACE]):
             self.outputs.append("jump")
@@ -213,9 +216,10 @@ class DataRecorder():
             removed_datapoints += 1
         """
 
-        self.inputs = self.inputs[:-50]
-        self.outputs = self.outputs[:-50]
-        removed_datapoints = 50
+        self.inputs = self.inputs[:-65]
+        self.jumping = self.jumping[:-65]
+        self.outputs = self.outputs[:-65]
+        removed_datapoints = 65
 
         print(f"Removed {removed_datapoints} datapoints")
 
@@ -227,8 +231,8 @@ class DataRecorder():
             if not file_exists:
                 writer.writerow(self.headers)  # Add header if the file is newly created
             
-            for i, j in zip(self.inputs, self.outputs):
-                writer.writerow(i + [j])
+            for i, j, k in zip(self.inputs, self.jumping, self.outputs):
+                writer.writerow(i + [j] + [k])
 
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles
@@ -244,7 +248,7 @@ def main():
     death_count = 0
     pause = False
     next_distance = random.randint(0, 400)
-    measuring_places = [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800]
+    measuring_places = list(range(100, 801, 25))
     recorder = DataRecorder(measuring_places)
     
     if NETWORK_PLAY:
@@ -351,7 +355,7 @@ def main():
             else:
                 player.update("nothing")
 
-            recorder.record(detector(), userInput)
+            recorder.record(detector(), player.dino_jump, userInput)
         
         SCREEN.fill((255, 255, 255))
         background()
