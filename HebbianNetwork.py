@@ -27,7 +27,7 @@ class HebbianNetwork():
                 #self.weights += learning_rate * np.outer(transformed_inputs[i], transformed_outputs[i])
                 for i in range(len(transformed_inputs[index])):
                     for j in range(len(transformed_outputs[index])):
-                        self.weights[i][j] += learning_rate * transformed_outputs[index][j] * (transformed_inputs[index][i] - self.weights[i][j])
+                        self.weights[i][j] += learning_rate * transformed_outputs[index][j] * (transformed_inputs[index][i] - transformed_outputs[index][j] *self.weights[i][j])
 
 
         print(self.weights)
