@@ -252,7 +252,7 @@ def main():
     recorder = DataRecorder(measuring_places)
     
     if NETWORK_PLAY:
-        network = HebbianNetwork.from_file('network.npy')
+        network = HebbianNetwork.from_file('network_lr_0.001_ep_2.npy')
 
     def score():
         global points, game_speed
@@ -281,7 +281,7 @@ def main():
                         else:
                             detections[-1] = 1
                     else:
-                        detections[-1] = 1
+                        detections[-1] = 10
                     break
         
         return detections   
