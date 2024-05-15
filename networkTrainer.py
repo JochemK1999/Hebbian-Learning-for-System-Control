@@ -4,20 +4,34 @@ import pandas as pd
 from HebbianNetwork import HebbianNetwork
 
 if __name__ == "__main__":
-    df = pd.read_csv('filtered_data.csv')
+    df = pd.read_csv('random_rows_more_nothings.csv')
 
     # Extract inputs (first 10 columns) and outputs (last column) as NumPy arrays
     inputs = df.iloc[:, :-1].values  # Extract all rows and all but the last column
     outputs = df.iloc[:, -1].values  # Extract all rows and the last column
 
     # Create a network with 30 inputs and 3 outputs
-    network = HebbianNetwork.from_dimensions(inputs.shape[1]*3, 4)
+    print(inputs.shape[1]*3)
+
+    network = HebbianNetwork.from_dimensions(inputs.shape[1]*3, 4, combinations=False, batch_training = True)
 
     # Train the network"
-    network.train(inputs, outputs, learning_rate=0.001, epochs=1)
+    network.train(inputs, outputs, learning_rate=0.001, epochs=10)
 
     # Save the network
     network.save('network.npy')
     network.save_as_csv('network.csv')
+
+    faults = []
+
+    for input, output in zip(inputs, outputs):
+        network_output = network.predict(input)
+        if network_output != output:
+            wrong_dataset = f"{input}, {network_output}, {output}"
+            if wrong_dataset not in faults:
+                faults.append(wrong_dataset)
+    
+    for i in faults:
+        print(i)
 
     print("network saved")
