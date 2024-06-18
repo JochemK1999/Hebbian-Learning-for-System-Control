@@ -1,5 +1,8 @@
 import numpy as np
 import math
+from collections import Counter
+from random import choices
+import random
 
 class HebbianNetwork():
     def __init__(self, numInputs=None, numOutputs=None, combinations=False, weights_file=None, batch_training=False):
@@ -28,11 +31,55 @@ class HebbianNetwork():
     def get_input_nodes_count(self, numInputs):
         return numInputs + math.comb(numInputs, 2)
     
-    def train(self, inputs, labels, learning_rate=0.1, epochs=1, store_between_epochs=False):
+    def resample(self, inputs, outputs):
+        # Count the number of occurrences of each class
+        counter = Counter(outputs)
+
+        print(counter)
+
+        # Find the maximum count
+        max_count = max(counter.values())
+
+        # Resample each class to have the same number of samples as the maximum count
+        resampledInputs = []
+        resampledOutputs = []
+        
+        for class_value, count in counter.items():
+            # Find the indices of samples of this class
+            indices = [i for i, x in enumerate(outputs) if x == class_value]
+
+            if count < max_count:
+                # Resample the indices
+                resampledIndices = choices(indices, k=max_count)
+            else:
+                # If this is the majority class, just use the original indices
+                resampledIndices = indices
+
+            # Add the resampled inputs and outputs to the resampled lists
+            resampledInputs.extend([inputs[i] for i in resampledIndices])
+            resampledOutputs.extend([outputs[i] for i in resampledIndices])
+
+        # Combine the resampled inputs and outputs into pairs
+        combined = list(zip(resampledInputs, resampledOutputs))
+
+        # Shuffle the combined list
+        random.shuffle(combined)
+
+        # Separate the shuffled inputs and outputs
+        shuffledInputs, shuffledOutputs = zip(*combined)
+
+        #print("waaaaaaaaa: ", len(outputs), len(shuffledOutputs))
+
+        return list(shuffledInputs), list(shuffledOutputs)
+
+    def train(self, inputs, labels, learning_rate=0.1, epochs=1, store_between_epochs=False, resample=False):
+        if resample:
+            inputs, labels = self.resample(inputs, labels)
+
         transformed_inputs = np.array([self.input_to_network(input) for input in  inputs])
         transformed_outputs = np.array([self.output_to_network(label) for label in labels])
 
-        print("start training")
+        #print("start training")
 
         temp_weights = []
         for epoch in range(epochs):
@@ -43,25 +90,33 @@ class HebbianNetwork():
                 #self.weights += learning_rate * np.outer(transformed_inputs[i], transformed_outputs[i])
                 for i in range(len(transformed_inputs[index])):
                     for j in range(len(transformed_outputs[index])):
+                        # Normal rule 
+                        update = learning_rate * transformed_outputs[index][j] * (transformed_inputs[index][i] - transformed_outputs[index][j]*self.weights[i][j])
+                        
+                        # Power rule
+                        #update = learning_rate * transformed_outputs[index][j] * ((transformed_inputs[index][i] - transformed_outputs[index][j]*self.weights[i][j])**5)
+                        
+                        # Normal rule 
                         update = learning_rate * transformed_outputs[index][j] * (transformed_inputs[index][i] - transformed_outputs[index][j]*self.weights[i][j])
                         
                         if self.batch_training:
                             update_matrix[i][j] += update
                         else:
                             self.weights[i][j] += update
-                
+
                 if not self.batch_training:
                     temp_weights.append(self.weights.flatten())
 
                 if (index%100==0):
-                    print(index)
+                    pass
+                    #print(index)
             
             if self.batch_training:
                 self.weights += update_matrix
                 temp_weights.append(self.weights.flatten())
 
             #self.save(f"network_lr_{learning_rate}_ep_{epoch+1}.npy")
-        np.savetxt(f"WeightOverTime.csv", temp_weights, delimiter=",")
+        #np.savetxt(f"WeightOverTime.csv", temp_weights, delimiter=",")
     
     def input_to_network(self, input):
         if self.combinations:
@@ -87,7 +142,7 @@ class HebbianNetwork():
         return network_input
 
     def output_to_network(self, output):
-        network_output = np.zeros(4)
+        network_output = np.full(4, 0)
         
         if output == "nothing":
             network_output[0] = 1

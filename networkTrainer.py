@@ -4,7 +4,8 @@ import pandas as pd
 from HebbianNetwork import HebbianNetwork
 
 if __name__ == "__main__":
-    df = pd.read_csv('random_rows_more_nothings.csv')
+    #df = pd.read_csv('random_rows.csv')
+    df = pd.read_csv('LowObject6Detectors.csv')
 
     # Extract inputs (first 10 columns) and outputs (last column) as NumPy arrays
     inputs = df.iloc[:, :-1].values  # Extract all rows and all but the last column
@@ -13,18 +14,25 @@ if __name__ == "__main__":
     # Create a network with 30 inputs and 3 outputs
     print(inputs.shape[1]*3)
 
-    network = HebbianNetwork.from_dimensions(inputs.shape[1]*3, 4, combinations=False, batch_training = True)
+    network = HebbianNetwork.from_dimensions(inputs.shape[1]*3, 4, combinations=False, batch_training = False)
 
     # Train the network"
-    network.train(inputs, outputs, learning_rate=0.001, epochs=10)
+    network.train(inputs, outputs, learning_rate=0.01, epochs=10, resample=True)
 
     # Save the network
     network.save('network.npy')
     network.save_as_csv('network.csv')
 
+    #df2 = pd.read_csv('1-2InputJumpDuckOutput%Input.csv')
+    df2 = pd.read_csv('LowObject6Detectors.csv')
+
+    # Extract inputs (first 10 columns) and outputs (last column) as NumPy arrays
+    test_inputs = df2.iloc[:, :-1].values  # Extract all rows and all but the last column
+    test_outputs = df2.iloc[:, -1].values  # Extract all rows and the last column
+
     faults = []
 
-    for input, output in zip(inputs, outputs):
+    for input, output in zip(test_inputs, test_outputs):
         network_output = network.predict(input)
         if network_output != output:
             wrong_dataset = f"{input}, {network_output}, {output}"
