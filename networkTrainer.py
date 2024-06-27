@@ -4,12 +4,20 @@ import pandas as pd
 from HebbianNetwork import HebbianNetwork
 
 if __name__ == "__main__":
-    #df = pd.read_csv('random_rows.csv')
-    df = pd.read_csv('LowObject6Detectors.csv')
+    #Set the dataset to be used
+    #dataset = pd.read_csv('LowObstacleGame_SJ_Data.csv')
+    dataset = pd.read_csv('LowObstacleGame_SJ+LJ_Data.csv')
+    #dataset = pd.read_csv('AllObstacleGame_Data.csv')
+    #dataset = pd.read_csv('AllObstacleGame_Resampled_Data.csv')
+
+    #Set the validation set to be used
+    #validationSet = pd.read_csv('LowObstacleGame_SJ_Validation.csv')
+    validationSet = pd.read_csv('LowObstacleGame_SJ+LJ_Validation.csv')
+    #validationSet = pd.read_csv('AllObstacleGame_Validation.csv')
 
     # Extract inputs (first 10 columns) and outputs (last column) as NumPy arrays
-    inputs = df.iloc[:, :-1].values  # Extract all rows and all but the last column
-    outputs = df.iloc[:, -1].values  # Extract all rows and the last column
+    inputs = dataset.iloc[:, :-1].values  # Extract all rows and all but the last column
+    outputs = dataset.iloc[:, -1].values  # Extract all rows and the last column
 
     # Create a network with 30 inputs and 3 outputs
     print(inputs.shape[1]*3)
@@ -17,18 +25,15 @@ if __name__ == "__main__":
     network = HebbianNetwork.from_dimensions(inputs.shape[1]*3, 4, combinations=False, batch_training = False)
 
     # Train the network"
-    network.train(inputs, outputs, learning_rate=0.01, epochs=10, resample=True)
+    network.train(inputs, outputs, learning_rate=0.01, epochs=40, resample=False)
 
     # Save the network
     network.save('network.npy')
     network.save_as_csv('network.csv')
 
-    #df2 = pd.read_csv('1-2InputJumpDuckOutput%Input.csv')
-    df2 = pd.read_csv('LowObject6Detectors.csv')
-
     # Extract inputs (first 10 columns) and outputs (last column) as NumPy arrays
-    test_inputs = df2.iloc[:, :-1].values  # Extract all rows and all but the last column
-    test_outputs = df2.iloc[:, -1].values  # Extract all rows and the last column
+    test_inputs = validationSet.iloc[:, :-1].values  # Extract all rows and all but the last column
+    test_outputs = validationSet.iloc[:, -1].values  # Extract all rows and the last column
 
     faults = []
 

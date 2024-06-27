@@ -116,7 +116,7 @@ class HebbianNetwork():
                 temp_weights.append(self.weights.flatten())
 
             #self.save(f"network_lr_{learning_rate}_ep_{epoch+1}.npy")
-        #np.savetxt(f"WeightOverTime.csv", temp_weights, delimiter=",")
+        np.savetxt(f"WeightOverTime.csv", temp_weights, delimiter=",")
     
     def input_to_network(self, input):
         if self.combinations:

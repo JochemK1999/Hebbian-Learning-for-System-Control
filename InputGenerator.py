@@ -26,8 +26,8 @@ def pick_row_from_csv(filename):
     return None
 
 # Usage example
-filename = '1-2InputJumpDuckOutput%Input.csv'
-new_filename = 'random_rows.csv'
+filename = 'AllObstacleGame_DataWithChance.csv'
+new_filename = 'AllObstacleGame_Resampled_Data.csv'
 
 with open(new_filename, 'w', newline='') as new_file:
     writer = csv.writer(new_file)
