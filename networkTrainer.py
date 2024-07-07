@@ -25,7 +25,7 @@ if __name__ == "__main__":
     network = HebbianNetwork.from_dimensions(inputs.shape[1]*3, 4, combinations=False, batch_training = False)
 
     # Train the network"
-    network.train(inputs, outputs, learning_rate=0.01, epochs=40, resample=False)
+    network.train(inputs, outputs, learning_rate=0.01, epochs=30, resample=False)
 
     # Save the network
     network.save('network.npy')

@@ -10,7 +10,7 @@ COMBINATIONS = False
 grid = np.load("network.npy")
 
 x_ticks = [0, 1, 2]
-x_labels = ["nothing", "jump", "long_jump"] #"duck",
+x_labels = ["nothing", "jump", "long_jump"] #, ,"duck"
 y_ticks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
 y_lables = ["d1_1", "d2_1", "d3_1", "d4_1", "d5_1", "d6_1", "d1_2", "d2_2", "d3_2", "d4_2", "d5_2", "d6_2", "d1_3", "d2_3", "d3_3", "d4_3", "d5_3", "d6_3"]
 
